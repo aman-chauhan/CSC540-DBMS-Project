@@ -3,9 +3,13 @@
  */
 package com.gradience.login;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import com.gradience.database.CheckUserObject;
 import com.gradience.database.LoginObject;
 
 /**
@@ -27,6 +31,11 @@ public class Login {
 			System.out.println(user.toString());
 			break;
 		case 2:
+			boolean success = newlogin.registerUser();
+			if (!success) {
+				System.out.println("Sorry! Cannot create user.");
+			}
+			main(null);
 			break;
 		case 3:
 			System.out.println("Thank You for using Gradience.");
@@ -35,31 +44,97 @@ public class Login {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	private boolean registerUser() {
+		boolean check = false;
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		String fname = null;
+		String lname = null;
+		String userid = null;
+		String password = null;
+		String college = null;
+		String utype = null;
+		Date extra = null;
+		System.out.println("\n\n");
+		header("SignUp for Gradience");
+		do {
+			System.out.println("Enter First Name -> ");
+			fname = sc.next();
+			System.out.println("Enter Last Name -> ");
+			lname = sc.next();
+			boolean ucheck = false;
+			do {
+				System.out.println("Enter username -> ");
+				userid = sc.next();
+				CheckUserObject obj = new CheckUserObject();
+				HashMap<String, String> response = obj.execute(userid);
+				if (response.get("MSG").equals("success") && Boolean.getBoolean(response.get("IFEXIST"))) {
+					ucheck = false;
+				} else if (response.get("MSG").equals("success")) {
+					System.out.println("ALERT! : username already exists in the system. Choose another.");
+					ucheck = true;
+				} else {
+					System.out.println("Error on server. Returning to Login Page.");
+					return false;
+				}
+			} while (ucheck);
+			System.out.println("Enter password -> ");
+			password = sc.next();
+			System.out.println("Enter college -> ");
+			college = sc.next();
+			do {
+				System.out.println("Enter 1 for Professor, 2 for Student -> ");
+				int tmp = sc.nextInt();
+				if (tmp == 1) {
+					utype = "professor";
+					System.out.println("Enter the date since you have joined as yyyy-mm-dd-> ");
+					String temp = sc.next();
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						extra = new Date((sdf.parse(sc.next())).getTime());
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					break;
+				} else if (tmp == 2) {
+					utype = "student";
+					break;
+				} else {
+					System.out.println("Please enter a valid choice.");
+				}
+			} while (true);
+			
+		} while (check);
+
+		return false;
+	}
+
 	private HashMap<String, String> askCredentials() {
 		HashMap<String, String> map = new HashMap<String, String>();
 		boolean check = false;
 		@SuppressWarnings("resource")
-		Scanner sc=new Scanner(System.in);
-		String user=null;
-		String password=null;
+		Scanner sc = new Scanner(System.in);
+		String user = null;
+		String password = null;
 		System.out.println("\n\n");
 		header("Login to Gradience");
 		do {
 			System.out.print("Enter username -> ");
-			user=sc.next();
+			user = sc.next();
 			System.out.print("Enter password -> ");
-			password=sc.next();
-			LoginObject obj=new LoginObject();
-			HashMap<String,String> response=obj.execute(user,password);
-			if(response.get("MSG").equals("success")) {
-				check=false;
-				String temp=response.get("TEXT");
+			password = sc.next();
+			LoginObject obj = new LoginObject();
+			HashMap<String, String> response = obj.execute(user, password);
+			if (response.get("MSG").equals("success")) {
+				check = false;
+				String temp = response.get("TEXT");
 				map.put("type", temp.split(":")[0]);
 				map.put("username", temp.split(":")[1]);
-				map.put("fname",temp.split(":")[2]);
+				map.put("fname", temp.split(":")[2]);
 				map.put("lname", temp.split(":")[3]);
 			} else {
-				check=true;
+				check = true;
 				System.out.println(response.get("TEXT"));
 			}
 		} while (check);
