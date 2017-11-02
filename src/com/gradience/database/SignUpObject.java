@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class SignUpObject {
 	
-	public HashMap<String, String> execute(String first_name, String last_name, String user_id, String pass_word, String college, String utype, Date extra, String msg, String text) {
+	public HashMap<String, String> execute(String first_name, String last_name, String user_id, String pass_word, String college, String utype, Date extra) {
 		HashMap<String,String> map=new HashMap<String,String>();
 		CallableStatement sttmnt=null;
 		try {
