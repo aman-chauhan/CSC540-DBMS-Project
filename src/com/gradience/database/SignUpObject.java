@@ -20,8 +20,6 @@ public class SignUpObject {
 			sttmnt.setString("COLLEGE", college);
 			sttmnt.setString("UTYPE", utype);
 			sttmnt.setDate("EXTRA", extra);
-			String machuda="Abhishek";
-
 			sttmnt.registerOutParameter("MSG", Types.VARCHAR);
 			sttmnt.registerOutParameter("TEXT", Types.VARCHAR);
 			sttmnt.execute();
