@@ -46,29 +46,23 @@ public class Student {
 		switch (choice) {
 		case 1:
 			System.out.println("\n\n");
-			view_edit_profile();
+			view_edit_profile(session);
 			break;
 		case 2:
 			System.out.println("\n\n");
-			view_courses();
+			view_courses(session);
 			break;
 		case 3:
 			System.out.println("\n\n");
-			logout();
+			logout(session);
 			break;
 		default:
 			break;
 		}
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+	
 	private void view_courses(HashMap<String, String> session) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void view_edit_profile() {
 		// TODO Auto-generated method stub
 
 	}
@@ -78,7 +72,8 @@ public class Student {
 			session.remove(key);
 		}
 		Login.main(null);
-=======
+	}
+
 	private void view_edit_profile(HashMap<String, String> session) {
 		boolean check = false;
 		int choice = 1;
@@ -98,7 +93,7 @@ public class Student {
 				System.out.println("Please enter a valid choice.\n");
 			}
 		} while (check);
-		
+
 		switch (choice) {
 		case 0:
 			System.out.println("\n\n");
@@ -114,8 +109,12 @@ public class Student {
 			break;
 		}
 	}
-	
-	
+
+	private void edit_profile(HashMap<String, String> session) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void view_profile(HashMap<String, String> session) {
 		header("View Profile, " + session.get("username"));
 		
@@ -132,13 +131,6 @@ public class Student {
 		if(choice==0){
 			view_edit_profile(session);
 		}
-				
->>>>>>> 3b63544a2e803a93837c8d912e45f0726d010a2c
-=======
-	private void view_edit_profile() {
-		// TODO Auto-generated method stub
-		
->>>>>>> 45823a1c52bed4f569cd02988b067babd55c89a5
 	}
 
 	private int choice() {
