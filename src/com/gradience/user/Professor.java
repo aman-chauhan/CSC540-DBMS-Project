@@ -102,22 +102,8 @@ public class Professor {
 	}
 
 	private void view_profile(HashMap<String, String> session) {
-		header("View Profile, " + session.get("username"));
+		// TODO Auto-generated method stub
 		
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("0. Go Back");
-		System.out.println("1. First Name: "+session.get("fname"));
-		System.out.println("2. Last Name: "+session.get("lname"));
-		System.out.println("3. Employee ID: "+session.get("username"));
-		System.out.println("Enter Your Choice -> ");
-		int choice = sc.nextInt();
-		
-		if(choice==0){
-			view_edit_profile(session);
-		}
-				
 	}
 
 	private void edit_profile(HashMap<String, String> session) {

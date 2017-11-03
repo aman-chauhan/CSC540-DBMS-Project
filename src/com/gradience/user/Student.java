@@ -44,77 +44,25 @@ public class Student {
 		switch(choice){
 		case 1:
 			System.out.println("\n\n");
-			view_edit_profile(session);
+			view_edit_profile();
 			break;
 		case 2:
 			System.out.println("\n\n");
-			view_courses(session);
+			view_courses();
 			break;
 		case 3:
 			System.out.println("\n\n");
-			logout(session);
+			logout();
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void view_edit_profile(HashMap<String, String> session) {
-		boolean check = false;
-		int choice = 1;
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
-		do {
-			System.out.println("0. Go Back");
-			System.out.println("1. View Profile");
-			System.out.println("2. Edit Profile");
-			System.out.print("Enter your choice -> ");
-			choice = sc.nextInt();
-
-			if (choice >= 0 || choice < 3) {
-				check = false;
-			} else {
-				check = true;
-				System.out.println("Please enter a valid choice.\n");
-			}
-		} while (check);
+	private void view_edit_profile() {
+		// TODO Auto-generated method stub
 		
-		switch (choice) {
-		case 0:
-			System.out.println("\n\n");
-			execute(session);
-			break;
-		case 1:
-			System.out.println("\n\n");
-			view_profile(session);
-			break;
-		case 2:
-			System.out.println("\n\n");
-			edit_profile(session);
-			break;
-		}
 	}
-	
-	
-	private void view_profile(HashMap<String, String> session) {
-		header("View Profile, " + session.get("username"));
-		
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("0. Go Back");
-		System.out.println("1. First Name: "+session.get("fname"));
-		System.out.println("2. Last Name: "+session.get("lname"));
-		System.out.println("3. Employee ID: "+session.get("username"));
-		System.out.println("Enter Your Choice -> ");
-		int choice = sc.nextInt();
-		
-		if(choice==0){
-			view_edit_profile(session);
-		}
-				
-	}
-	
 
 	private int choice() {
 		boolean check = false;
