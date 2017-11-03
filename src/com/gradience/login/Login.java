@@ -4,7 +4,6 @@
 package com.gradience.login;
 
 import java.sql.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,6 +11,9 @@ import java.util.Scanner;
 import com.gradience.database.CheckUserObject;
 import com.gradience.database.LoginObject;
 import com.gradience.database.SignUpObject;
+import com.gradience.user.Assistant;
+import com.gradience.user.Professor;
+import com.gradience.user.Student;
 
 /**
  * @author achauhan
@@ -28,8 +30,17 @@ public class Login {
 		int choice = newlogin.choice();
 		switch (choice) {
 		case 1:
-			HashMap<String, String> user = newlogin.askCredentials();
-			System.out.println(user.toString());
+			HashMap<String, String> session = newlogin.askCredentials();
+			if(session.get("type").equals("professor")) {
+				Professor user=new Professor();
+				user.execute(session);
+			} else if(session.get("type").equals("assistant")) {
+				Assistant user=new Assistant();
+				user.execute(session);
+			} else if(session.get("type").equals("student")) {
+				Student user=new Student();
+				user.execute(session);
+			}
 			break;
 		case 2:
 			boolean success = newlogin.registerUser();
@@ -46,7 +57,6 @@ public class Login {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private boolean registerUser() {
 		boolean check = false;
 		@SuppressWarnings("resource")
