@@ -104,10 +104,7 @@ public class Professor {
 	}
 
 	private void view_profile(HashMap<String, String> session) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
 		header("View Profile, " + session.get("username"));
 		
 		@SuppressWarnings("resource")
@@ -124,11 +121,7 @@ public class Professor {
 			view_edit_profile(session);
 		}
 				
->>>>>>> 3b63544a2e803a93837c8d912e45f0726d010a2c
-=======
-		// TODO Auto-generated method stub
-		
->>>>>>> 45823a1c52bed4f569cd02988b067babd55c89a5
+
 	}
 
 	private void edit_profile(HashMap<String, String> session) {

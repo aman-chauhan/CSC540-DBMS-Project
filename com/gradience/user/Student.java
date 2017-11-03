@@ -61,8 +61,6 @@ public class Student {
 		}
 	}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	private void view_courses(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
 
@@ -78,7 +76,8 @@ public class Student {
 			session.remove(key);
 		}
 		Login.main(null);
-=======
+	}
+
 	private void view_edit_profile(HashMap<String, String> session) {
 		boolean check = false;
 		int choice = 1;
@@ -132,14 +131,9 @@ public class Student {
 		if(choice==0){
 			view_edit_profile(session);
 		}
-				
->>>>>>> 3b63544a2e803a93837c8d912e45f0726d010a2c
-=======
-	private void view_edit_profile() {
-		// TODO Auto-generated method stub
-		
->>>>>>> 45823a1c52bed4f569cd02988b067babd55c89a5
 	}
+				
+	
 
 	private int choice() {
 		boolean check = false;
