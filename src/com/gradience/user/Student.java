@@ -46,21 +46,22 @@ public class Student {
 		switch (choice) {
 		case 1:
 			System.out.println("\n\n");
-			view_edit_profile(session);
+			view_edit_profile();
 			break;
 		case 2:
 			System.out.println("\n\n");
-			view_courses(session);
+			view_courses();
 			break;
 		case 3:
 			System.out.println("\n\n");
-			logout(session);
+			logout();
 			break;
 		default:
 			break;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	private void view_courses(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
@@ -133,8 +134,12 @@ public class Student {
 		}
 				
 >>>>>>> 3b63544a2e803a93837c8d912e45f0726d010a2c
+=======
+	private void view_edit_profile() {
+		// TODO Auto-generated method stub
+		
+>>>>>>> 45823a1c52bed4f569cd02988b067babd55c89a5
 	}
-	
 
 	private int choice() {
 		boolean check = false;
