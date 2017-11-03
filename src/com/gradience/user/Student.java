@@ -3,8 +3,10 @@ package com.gradience.user;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import com.gradience.login.Login;
+
 public class Student {
-	
+
 	private void header(String message) {
 		StringBuffer sb1 = new StringBuffer();
 		for (int i = 0; i < 80; ++i) {
@@ -40,28 +42,40 @@ public class Student {
 		// TODO Auto-generated method stub
 		header("Welcome to Gradience, " + session.get("username"));
 		int choice = choice();
-		
-		switch(choice){
+
+		switch (choice) {
 		case 1:
 			System.out.println("\n\n");
 			view_edit_profile();
 			break;
 		case 2:
 			System.out.println("\n\n");
-			view_courses();
+			view_courses(session);
 			break;
 		case 3:
 			System.out.println("\n\n");
-			logout();
+			logout(session);
 			break;
 		default:
 			break;
 		}
 	}
 
+	private void view_courses(HashMap<String, String> session) {
+		// TODO Auto-generated method stub
+
+	}
+
 	private void view_edit_profile() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private void logout(HashMap<String, String> session) {
+		for (String key : session.keySet()) {
+			session.remove(key);
+		}
+		Login.main(null);
 	}
 
 	private int choice() {

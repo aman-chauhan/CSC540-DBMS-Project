@@ -3,6 +3,7 @@ package com.gradience.user;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import com.gradience.database.EditUserObject;
 import com.gradience.login.Login;
 
 public class Professor {
@@ -66,6 +67,7 @@ public class Professor {
 	}
 
 	private void view_edit_profile(HashMap<String, String> session) {
+		header("View/Edit Profile, " + session.get("username"));
 		boolean check = false;
 		int choice = 1;
 		@SuppressWarnings("resource")
@@ -84,7 +86,7 @@ public class Professor {
 				System.out.println("Please enter a valid choice.\n");
 			}
 		} while (check);
-		
+
 		switch (choice) {
 		case 0:
 			System.out.println("\n\n");
@@ -102,13 +104,42 @@ public class Professor {
 	}
 
 	private void view_profile(HashMap<String, String> session) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void edit_profile(HashMap<String, String> session) {
-		// TODO Auto-generated method stub
-		
+		header("Edit Profile, " + session.get("username"));
+
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("0. Go Back");
+		System.out.println("1. First Name: " + session.get("fname"));
+		System.out.println("2. Last Name: " + session.get("lname"));
+		System.out.print("Enter Your Choice -> ");
+		int choice = sc.nextInt();
+		EditUserObject obj = new EditUserObject();
+		HashMap<String, String> response = null;
+		switch (choice) {
+		case 1:
+			System.out.print("Enter New First Name");
+			String nfname = sc.next();
+			response = obj.execute(session.get("username"), "fname", nfname);
+			if (response.get("MSG").equals("success")) {
+				session.replace("fname", nfname);
+			}
+			System.out.println(response.get("TEXT"));
+			break;
+		case 2:
+			System.out.print("Enter New Last Name");
+			String nlname = sc.next();
+			response = obj.execute(session.get("username"), "lname", nlname);
+			if (response.get("MSG").equals("success")) {
+				session.replace("lname", nlname);
+			}
+			System.out.println(response.get("TEXT"));
+			break;
+		}
 	}
 
 	private void view_add_course(HashMap<String, String> session) {
@@ -130,7 +161,7 @@ public class Professor {
 				System.out.println("Please enter a valid choice.\n");
 			}
 		} while (check);
-		
+
 		switch (choice) {
 		case 0:
 			System.out.println("\n\n");
@@ -149,12 +180,12 @@ public class Professor {
 
 	private void view_course(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void add_course(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void enroll_drop_student(HashMap<String, String> session) {
@@ -176,7 +207,7 @@ public class Professor {
 				System.out.println("Please enter a valid choice.\n");
 			}
 		} while (check);
-		
+
 		switch (choice) {
 		case 0:
 			System.out.println("\n\n");
@@ -195,12 +226,12 @@ public class Professor {
 
 	private void drop_student(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void enroll_student(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void search_add_question(HashMap<String, String> session) {
@@ -222,7 +253,7 @@ public class Professor {
 				System.out.println("Please enter a valid choice.\n");
 			}
 		} while (check);
-		
+
 		switch (choice) {
 		case 0:
 			System.out.println("\n\n");
@@ -241,12 +272,12 @@ public class Professor {
 
 	private void add_question(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void search_question(HashMap<String, String> session) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void logout(HashMap<String, String> session) {
