@@ -31,6 +31,7 @@ public class Login {
 		switch (choice) {
 		case 1:
 			HashMap<String, String> session = newlogin.askCredentials();
+			System.out.println("\n\n");
 			if(session.get("type").equals("professor")) {
 				Professor user=new Professor();
 				user.execute(session);
@@ -209,11 +210,11 @@ public class Login {
 		}
 		StringBuffer sb3 = new StringBuffer();
 		sb3.append("*");
-		for (int i = 1; i < (80 - message.length()) / 2; ++i) {
+		for (int i = 1; i < Math.floor((80 - message.length()) / 2.0); ++i) {
 			sb3.append(" ");
 		}
 		sb3.append(message);
-		for (int i = 1; i < (80 - message.length()) / 2; ++i) {
+		for (int i = 1; i < Math.ceil((80 - message.length()) / 2.0); ++i) {
 			sb3.append(" ");
 		}
 		sb3.append("*");
