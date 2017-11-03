@@ -11,7 +11,7 @@ public class CheckUserObject {
 		HashMap<String,String> map=new HashMap<String,String>();
 		CallableStatement sttmnt=null;
 		try {
-			sttmnt=DBConnection.instance().conn.prepareCall("{call SIGN_UP(?,?,?,?)}");
+			sttmnt=DBConnection.instance().conn.prepareCall("{call CHECK_USER_ID(?,?,?,?)}");
 			sttmnt.setString("U_ID", username);
 			sttmnt.registerOutParameter("IFEXIST", Types.VARCHAR);
 			sttmnt.registerOutParameter("MSG", Types.VARCHAR);

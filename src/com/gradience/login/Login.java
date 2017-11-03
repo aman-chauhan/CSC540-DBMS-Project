@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import com.gradience.database.CheckUserObject;
 import com.gradience.database.LoginObject;
+import com.gradience.database.SignUpObject;
 
 /**
  * @author achauhan
@@ -35,6 +36,7 @@ public class Login {
 			if (!success) {
 				System.out.println("Sorry! Cannot create user.");
 			}
+			System.out.println("\n\n");
 			main(null);
 			break;
 		case 3:
@@ -59,17 +61,17 @@ public class Login {
 		System.out.println("\n\n");
 		header("SignUp for Gradience");
 		do {
-			System.out.println("Enter First Name -> ");
+			System.out.print("Enter First Name -> ");
 			fname = sc.next();
-			System.out.println("Enter Last Name -> ");
+			System.out.print("Enter Last Name -> ");
 			lname = sc.next();
 			boolean ucheck = false;
 			do {
-				System.out.println("Enter username -> ");
+				System.out.print("Enter username -> ");
 				userid = sc.next();
 				CheckUserObject obj = new CheckUserObject();
 				HashMap<String, String> response = obj.execute(userid);
-				if (response.get("MSG").equals("success") && Boolean.getBoolean(response.get("IFEXIST"))) {
+				if (response.get("MSG").equals("success") && response.get("IFEXIST").equals("true")) {
 					ucheck = false;
 				} else if (response.get("MSG").equals("success")) {
 					System.out.println("ALERT! : username already exists in the system. Choose another.");
@@ -79,35 +81,54 @@ public class Login {
 					return false;
 				}
 			} while (ucheck);
-			System.out.println("Enter password -> ");
+			System.out.print("Enter password -> ");
 			password = sc.next();
-			System.out.println("Enter college -> ");
+			System.out.print("Enter college -> ");
 			college = sc.next();
 			do {
-				System.out.println("Enter 1 for Professor, 2 for Student -> ");
+				System.out.print("Enter 1 for Professor, 2 for Student -> ");
 				int tmp = sc.nextInt();
 				if (tmp == 1) {
 					utype = "professor";
-					System.out.println("Enter the date since you have joined as yyyy-mm-dd-> ");
+					System.out.print("Enter the date since you have joined as yyyy-mm-dd-> ");
 					String temp = sc.next();
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
-						extra = new Date((sdf.parse(sc.next())).getTime());
-					} catch (ParseException e) {
+						extra = new Date((sdf.parse(temp)).getTime());
+						break;
+					} catch (Exception e) {
+						System.out.println("in catch");
 						e.printStackTrace();
+						break;
 					}
-					break;
 				} else if (tmp == 2) {
-					utype = "student";
+					System.out.print("Select 1 for Bachelors, 2 for Masters -> ");
+					int temp = sc.nextInt();
+					if (temp == 1) {
+						utype = "bachelor";
+					} else {
+						utype = "masters";
+					}
 					break;
 				} else {
 					System.out.println("Please enter a valid choice.");
 				}
 			} while (true);
-			
+
+			SignUpObject obj = new SignUpObject();
+			HashMap<String, String> response = obj.execute(fname, lname, userid, password, college, utype, extra);
+			if (response.get("MSG").equals("success")) {
+				check = false;
+				System.out.println(response.get("TEXT"));
+			} else {
+				check = true;
+				System.out.println(response.get("TEXT"));
+				System.out.println("Error on Server. Returning to Login Page.");
+				return false;
+			}
 		} while (check);
 
-		return false;
+		return true;
 	}
 
 	private HashMap<String, String> askCredentials() {
