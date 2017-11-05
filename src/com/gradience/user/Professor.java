@@ -8,9 +8,15 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import com.gradience.database.AddCourseObject;
+import com.gradience.database.AddExerciseObject;
 import com.gradience.database.AddQuestionObject;
+import com.gradience.database.AddTAObject;
 import com.gradience.database.AddTopicObject;
+import com.gradience.database.CourseTAList;
+import com.gradience.database.CourseTopicObject;
+import com.gradience.database.DropObject;
 import com.gradience.database.EditUserObject;
+import com.gradience.database.EnrolObject;
 import com.gradience.database.SearchQuestionList;
 import com.gradience.database.SearchTopicList;
 import com.gradience.database.TeacherCourseList;
@@ -18,6 +24,7 @@ import com.gradience.login.Login;
 import com.gradience.model.Course;
 import com.gradience.model.Question;
 import com.gradience.model.Topic;
+import com.gradience.model.User;
 
 public class Professor {
 
@@ -369,19 +376,259 @@ public class Professor {
 		header("View Exercises, " + session.get("username"));
 		System.out.println("\n\n");
 		view_add_exercise_to_course(session, course);
+
 	}
 
 	private void add_exercise(HashMap<String, String> session, Course course) {
-		header("View Exercises, " + session.get("username"));
-
+		header("Add Exercise, " + session.get("username"));
+		CourseTopicObject obj = new CourseTopicObject();
+			ArrayList<Topic> topics = obj.execute(course.getCourse_id());
+		if (topics.size() == 0) {
+			System.out.println("Please add topics to the course.");
+			System.out.println("\n\n");
+			view_add_exercise_to_course(session, course);
+		} else {
+			String p_id = session.get("username");
+			String e_name;
+			int ttl_qs;
+			int ttl_retries;
+			Date start = null;
+			Date end = null;
+			float right;
+			float wrong;
+			String type;
+			String policy;
+			int strtdiff;
+			int enddiff;
+			int topic_id;
+			@SuppressWarnings("resource")
+			Scanner sc = new Scanner(System.in);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			System.out.print("Enter Name of Exercise -> ");
+			e_name = sc.nextLine();
+			System.out.print("Enter total number of questions -> ");
+			ttl_qs = sc.nextInt();
+			System.out.print("Enter total number of retries -> ");
+			ttl_retries = sc.nextInt();
+			try {
+				System.out.print("Enter Start Date (yyyy-mm-dd) -> ");
+				start = new Date((sdf.parse(sc.next())).getTime());
+				System.out.print("Enter End Date (yyyy-mm-dd) -> ");
+				end = new Date((sdf.parse(sc.next())).getTime());
+			} catch (ParseException e) {
+				System.out.println("Wrong format. Try Again");
+				System.out.println("\n\n");
+				add_exercise(session, course);
+			}
+			System.out.print("Enter points for right answer -> ");
+			right = sc.nextFloat();
+			System.out.print("Enter points for wrong answer -> ");
+			wrong = sc.nextFloat();
+			System.out.print("Standard or Adaptive (s or a) -> ");
+			if (sc.next().equals("s"))
+				type = "static";
+			else
+				type = "dynamic";
+			System.out.print("Scoring policy Maximum, Average or Latest (m,a,l)-> ");
+			policy = sc.next();
+			if (policy.equals("m"))
+				policy = "maximum";
+			else if (policy.equals("a"))
+				policy = "average";
+			else
+				policy = "latest";
+			System.out.print("Enter starting difficulty (1 to 5) -> ");
+			strtdiff = sc.nextInt();
+			System.out.print("Enter ending difficulty (greater than starting and <= 5) -> ");
+			enddiff = sc.nextInt();
+			System.out.print("Choose Topic Id from below -> ");
+			for (int i = 0; i < topics.size(); ++i) {
+				System.out.println(topics.get(i).getTopic_id() + " - " + topics.get(i).getTopic_name());
+			}
+			System.out.print("Choose Topic ID -> ");
+			topic_id=sc.nextInt();
+			AddExerciseObject aeo=new AddExerciseObject();
+			int ex_id = aeo.execute(p_id,e_name,ttl_qs,ttl_retries,start,end,right,wrong,type,policy,strtdiff,enddiff,topic_id);
+			if(type.equals("static")) {
+				ArrayList<Question> questions=aeo.execute2(ex_id);
+				System.out.println("Available questions -> ");
+				for(int i=0;i<questions.size();++i) {
+					System.out.println((i+1)+". "+questions.get(i).getQuestion_id()+" - "+questions.get(i).getQuestion_text());
+				}
+				System.out.println("Choose a list of question ID's from above to add to exercise.\nEnter the question ID list in comma separated way -> ");
+				String temp=sc.next();
+				String[] ls=temp.split(",");
+				for(int i=0;i<ls.length;++i) {
+					aeo.execute3(ex_id,ls[i]);
+				}
+			}
+		}
+		System.out.println("\n\n");
+		view_add_exercise_to_course(session, course);
 	}
 
 	private void view_add_ta_to_course(HashMap<String, String> session, Course course) {
+		header("View/Add TA for " + course.getCourse_id() + ", " + session.get("username"));
+		boolean check = false;
+		int choice = 1;
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		do {
+			System.out.println("0. Go Back");
+			System.out.println("1. View TA");
+			System.out.println("2. Add TA");
+			System.out.print("Enter your choice -> ");
+			choice = sc.nextInt();
+
+			if (choice >= 0 || choice < 3) {
+				check = false;
+			} else {
+				check = true;
+				System.out.println("Please enter a valid choice.\n");
+			}
+		} while (check);
+
+		switch (choice) {
+		case 0:
+			System.out.println("\n\n");
+			view_course_specific(session, course);
+			break;
+		case 1:
+			System.out.println("\n\n");
+			view_ta_of_course(session, course);
+			break;
+		case 2:
+			System.out.println("\n\n");
+			add_ta_to_course(session, course);
+			break;
+		}
 
 	}
 
-	private void enrol_drop_student(HashMap<String, String> session, Course course) {
+	private void view_ta_of_course(HashMap<String, String> session, Course course) {
+		header("View TA for " + course.getCourse_id() + ", " + session.get("username"));
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		CourseTAList obj = new CourseTAList();
+		ArrayList<User> list = obj.execute(course.getCourse_id());
+		if (list.size() == 0) {
+			System.out.println("No TA's assigned to this course.");
+		} else {
+			for (int i = 0; i < list.size(); ++i) {
+				System.out.println((i + 1) + ". " + list.get(i).getUser_id() + "\t" + list.get(i).getFname() + "\t"
+						+ list.get(i).getLname());
+			}
+		}
+		System.out.println("Press 0 to go back -> ");
+		sc.nextInt();
+		System.out.println("\n\n");
+		view_add_ta_to_course(session, course);
+	}
 
+	private void add_ta_to_course(HashMap<String, String> session, Course course) {
+		header("Add TA for " + course.getCourse_id() + ", " + session.get("username"));
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		String temp;
+		AddTAObject obj = new AddTAObject();
+		HashMap<String, String> response = null;
+		System.out.println("Enter the username of TA to add -> ");
+		temp = sc.next();
+		response = obj.execute(temp, course.getCourse_id());
+		if (response.get("MSG").equals("success")) {
+			System.out.println(response.get("TEXT"));
+		} else {
+			System.out.println(response.get("TEXT"));
+		}
+		System.out.println("Press 0 to go back -> ");
+		sc.nextInt();
+		System.out.println("\n\n");
+		view_add_ta_to_course(session, course);
+	}
+
+	private void enrol_drop_student(HashMap<String, String> session, Course course) {
+		header("Enrol/Drop Student for " + course.getCourse_id() + ", " + session.get("username"));
+		boolean check = false;
+		int choice = 1;
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		do {
+			System.out.println("0. Go Back");
+			System.out.println("1. Enrol Student");
+			System.out.println("2. Drop Student");
+			System.out.print("Enter your choice -> ");
+			choice = sc.nextInt();
+
+			if (choice >= 0 || choice < 3) {
+				check = false;
+			} else {
+				check = true;
+				System.out.println("Please enter a valid choice.\n");
+			}
+		} while (check);
+
+		switch (choice) {
+		case 0:
+			System.out.println("\n\n");
+			view_course_specific(session, course);
+			break;
+		case 1:
+			System.out.println("\n\n");
+			enrol_student(session, course);
+			break;
+		case 2:
+			System.out.println("\n\n");
+			drop_student(session, course);
+			break;
+		}
+	}
+
+	private void drop_student(HashMap<String, String> session, Course course) {
+		header("Drop student for " + course.getCourse_id() + ", " + session.get("username"));
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		String temp;
+		DropObject obj = new DropObject();
+		HashMap<String, String> response = null;
+		System.out.println("Enter username of students to drop from the course as a comma separated list -> ");
+		temp = sc.nextLine();
+		String[] l = temp.split(",");
+		for (int i = 0; i < l.length; ++i) {
+			response = obj.execute(l[i], course.getCourse_id());
+			if (response.get("MSG").equals("success")) {
+				System.out.println(response.get("TEXT"));
+			} else {
+				System.out.println(response.get("TEXT"));
+			}
+		}
+		System.out.println("Press 0 to go back -> ");
+		sc.nextInt();
+		System.out.println("\n\n");
+		enrol_drop_student(session, course);
+	}
+
+	private void enrol_student(HashMap<String, String> session, Course course) {
+		header("Enrol student for " + course.getCourse_id() + ", " + session.get("username"));
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		String temp;
+		EnrolObject obj = new EnrolObject();
+		HashMap<String, String> response = null;
+		System.out.println("Enter username of students to enrol for the course as a comma separated list -> ");
+		temp = sc.nextLine();
+		String[] l = temp.split(",");
+		for (int i = 0; i < l.length; ++i) {
+			response = obj.execute(l[i], course.getCourse_id());
+			if (response.get("MSG").equals("success")) {
+				System.out.println(response.get("TEXT"));
+			} else {
+				System.out.println(response.get("TEXT"));
+			}
+		}
+		System.out.println("Press 0 to go back -> ");
+		sc.nextInt();
+		System.out.println("\n\n");
+		enrol_drop_student(session, course);
 	}
 
 	private void view_course_report(HashMap<String, String> session, Course course) {
