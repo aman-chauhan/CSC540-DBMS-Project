@@ -6,6 +6,7 @@ import java.util.Scanner;
 import com.gradience.login.Login;
 
 public class Assistant {
+
 	public void execute(HashMap<String, String> session) {
 		header("Welcome to Gradience, " + session.get("username"));
 		int choice = choice();
@@ -36,28 +37,6 @@ public class Assistant {
 			break;
 
 		}
-
-	}
-
-	private void logout(HashMap<String, String> session) {
-		for (String key : session.keySet()) {
-			session.remove(key);
-		}
-		Login.main(null);
-	}
-
-	private void enroll_drop_student(HashMap<String, String> session) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void view_courses(HashMap<String, String> session) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void view_edit_profile(HashMap<String, String> session) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -113,6 +92,28 @@ public class Assistant {
 			}
 		} while (check);
 		return choice;
+	}
+
+	private void view_edit_profile(HashMap<String, String> session) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void view_courses(HashMap<String, String> session) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void enroll_drop_student(HashMap<String, String> session) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void logout(HashMap<String, String> session) {
+		for (String key : session.keySet()) {
+			session.remove(key);
+		}
+		Login.main(null);
 	}
 
 }
