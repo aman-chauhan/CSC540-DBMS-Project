@@ -295,10 +295,11 @@ public class Professor {
 			System.out.println("1. View/Add Exercises");
 			System.out.println("2. View/Add TA");
 			System.out.println("3. Enrol/Drop Student");
-			System.out.println("4. View Report");
+			System.out.println("4. Add topic to course");
+			System.out.println("5. View Report");
 			System.out.print("Enter your choice -> ");
 			choice = sc.nextInt();
-			if (choice < 0 || choice > 4) {
+			if (choice < 0 || choice > 5) {
 				System.out.println("Please enter a valid choice.\n");
 				check = true;
 			} else {
@@ -321,8 +322,38 @@ public class Professor {
 			enrol_drop_student(session, course);
 			break;
 		case 4:
+			add_topic_to_course(session,course);
+			break;
+		case 5:
 			view_course_report(session, course);
 			break;
+		}
+	}
+
+	private void add_topic_to_course(HashMap<String, String> session, Course course) {
+		header("Please keep topic id's in handy");
+		CourseTopicObject obj = new CourseTopicObject();
+		HashMap<String, String> response = null;
+		System.out.println("Add topics to be added in the course in a comma separated list -> ");
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		String topic_ids = sc.next();
+		String[] topics = topic_ids.split(","); 
+		for(String topic_id: topics) {
+			response = obj.execute2(course.getCourse_id(), topic_id);
+			if(response.get("MSG").equals("success")) {
+				System.out.println(topic_id+" succesfully added to "+course.getCourse_id()+".");
+			}
+			else {
+				System.out.println(topic_id+" not added.");
+			}
+		}
+		System.out.print("Press 0 to go back -> ");
+		int choice = sc.nextInt();
+
+		if (choice == 0) {
+			System.out.println("\n\n");
+			view_course_specific(session, course);
 		}
 	}
 

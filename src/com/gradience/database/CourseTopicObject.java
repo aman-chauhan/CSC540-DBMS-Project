@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.gradience.model.Topic;
 
@@ -30,6 +31,25 @@ public class CourseTopicObject {
 				ret.add(t);
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
+	
+	public HashMap<String, String> execute2(String course_id,String topic_id){
+		HashMap<String,String> ret = new HashMap<String,String>();
+		CallableStatement sttmnt = null;
+		try {
+			sttmnt = DBConnection.instance().conn.prepareCall("{call ADD_TOPIC_TO_COURSE(?,?,?,?)}");
+			sttmnt.setString("C_ID", course_id);
+			sttmnt.setInt("T_ID", Integer.parseInt(topic_id));
+			sttmnt.registerOutParameter("MSG", Types.VARCHAR);
+			sttmnt.registerOutParameter("TEXT", Types.VARCHAR);
+			sttmnt.execute();
+			ret.put("MSG", sttmnt.getString("MSG"));
+			ret.put("TEXT", sttmnt.getString("TEXT"));
+		}
+		catch(SQLException e){
 			e.printStackTrace();
 		}
 		return ret;
