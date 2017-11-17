@@ -153,18 +153,15 @@ public class Professor {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("0. Go Back");
 		System.out.println("1. First Name: " + session.get("fname"));
 		System.out.println("2. Last Name: " + session.get("lname"));
 		System.out.println("3. Employee ID: " + session.get("username"));
-		System.out.print("Enter Your Choice -> ");
-		int choice = sc.nextInt();
 
-		if (choice == 0) {
+		System.out.print("Press 0 to go back -> ");
+		sc.nextInt();
 
-			System.out.println("\n\n");
-			view_edit_profile(session);
-		}
+		System.out.println("\n\n");
+		view_edit_profile(session);
 	}
 
 	private void edit_profile(HashMap<String, String> session) {
@@ -172,7 +169,6 @@ public class Professor {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("0. Go Back");
 		System.out.println("1. First Name: " + session.get("fname"));
 		System.out.println("2. Last Name: " + session.get("lname"));
 		System.out.print("Enter Your Choice -> ");
@@ -181,12 +177,8 @@ public class Professor {
 		HashMap<String, String> response = null;
 
 		switch (choice) {
-		case 0:
-			System.out.println("\n\n");
-			view_edit_profile(session);
-			break;
 		case 1:
-			System.out.print("Enter New First Name");
+			System.out.print("Enter New First Name ->");
 			String nfname = sc.next();
 			response = obj.execute(session.get("username"), "fname", nfname);
 			if (response.get("MSG").equals("success")) {
@@ -195,7 +187,7 @@ public class Professor {
 			System.out.println(response.get("TEXT"));
 			break;
 		case 2:
-			System.out.print("Enter New Last Name");
+			System.out.print("Enter New Last Name ->");
 			String nlname = sc.next();
 			response = obj.execute(session.get("username"), "lname", nlname);
 			if (response.get("MSG").equals("success")) {
@@ -382,7 +374,7 @@ public class Professor {
 	private void add_exercise(HashMap<String, String> session, Course course) {
 		header("Add Exercise, " + session.get("username"));
 		CourseTopicObject obj = new CourseTopicObject();
-			ArrayList<Topic> topics = obj.execute(course.getCourse_id());
+		ArrayList<Topic> topics = obj.execute(course.getCourse_id());
 		if (topics.size() == 0) {
 			System.out.println("Please add topics to the course.");
 			System.out.println("\n\n");
@@ -446,20 +438,23 @@ public class Professor {
 				System.out.println(topics.get(i).getTopic_id() + " - " + topics.get(i).getTopic_name());
 			}
 			System.out.print("Choose Topic ID -> ");
-			topic_id=sc.nextInt();
-			AddExerciseObject aeo=new AddExerciseObject();
-			int ex_id = aeo.execute(p_id,e_name,ttl_qs,ttl_retries,start,end,right,wrong,type,policy,strtdiff,enddiff,topic_id);
-			if(type.equals("static")) {
-				ArrayList<Question> questions=aeo.execute2(ex_id);
+			topic_id = sc.nextInt();
+			AddExerciseObject aeo = new AddExerciseObject();
+			int ex_id = aeo.execute(p_id, e_name, ttl_qs, ttl_retries, start, end, right, wrong, type, policy, strtdiff,
+					enddiff, topic_id);
+			if (type.equals("static")) {
+				ArrayList<Question> questions = aeo.execute2(ex_id);
 				System.out.println("Available questions -> ");
-				for(int i=0;i<questions.size();++i) {
-					System.out.println((i+1)+". "+questions.get(i).getQuestion_id()+" - "+questions.get(i).getQuestion_text());
+				for (int i = 0; i < questions.size(); ++i) {
+					System.out.println((i + 1) + ". " + questions.get(i).getQuestion_id() + " - "
+							+ questions.get(i).getQuestion_text());
 				}
-				System.out.println("Choose a list of question ID's from above to add to exercise.\nEnter the question ID list in comma separated way -> ");
-				String temp=sc.next();
-				String[] ls=temp.split(",");
-				for(int i=0;i<ls.length;++i) {
-					aeo.execute3(ex_id,ls[i]);
+				System.out.println(
+						"Choose a list of question ID's from above to add to exercise.\nEnter the question ID list in comma separated way -> ");
+				String temp = sc.next();
+				String[] ls = temp.split(",");
+				for (int i = 0; i < ls.length; ++i) {
+					aeo.execute3(ex_id, ls[i]);
 				}
 			}
 		}
