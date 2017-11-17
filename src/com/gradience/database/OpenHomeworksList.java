@@ -63,18 +63,15 @@ public class OpenHomeworksList {
 			sttmnt.registerOutParameter("TEXT", Types.VARCHAR);
 			sttmnt.registerOutParameter("attemptData", OracleTypes.CURSOR);
 			sttmnt.execute();
-			if (sttmnt.getString("MSG").equals("success")) {
-				ResultSet rs = (ResultSet) sttmnt.getObject("attemptData");
-				while (rs.next()) {
-					AHistory1 a = new AHistory1();
-					a.setAttempt_id(rs.getInt("ATTEMPT_ID"));
-					a.setEndTime(rs.getTimestamp("END_TIME"));
-					a.setScore(rs.getFloat("SCORE"));
-					list.add(a);
-				}
-			} else {
-				System.out.println(sttmnt.getString("TEXT"));
+			ResultSet rs = (ResultSet) sttmnt.getObject("attemptData");
+			while (rs.next()) {
+				AHistory1 a = new AHistory1();
+				a.setAttempt_id(rs.getInt("ATTEMPT_ID"));
+				a.setEndTime(rs.getTimestamp("END_TIME"));
+				a.setScore(rs.getFloat("SCORE"));
+				list.add(a);
 			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -94,7 +91,6 @@ public class OpenHomeworksList {
 			if (sttmnt.getString("MSG").equals("success")) {
 				return Integer.parseInt(sttmnt.getString("TEXT"));
 			} else {
-				System.out.println(sttmnt.getString("TEXT"));
 				return 0;
 			}
 		} catch (SQLException e) {
