@@ -2,14 +2,58 @@ package com.gradience.model;
 
 public class Options {
 	int q_id;
-	String q_text;
 	int prm_id;
+	int opt_id;
+	boolean selected;
+	float score;
+	String q_text;
+	String q_hint;
+	String q_expl;
 	String prm_name;
 	String prm_values;
-	int opt_id;
 	String opt_text;
-	float score;
-	boolean selected;
+	String opt_type;
+	String opt_expl;
+	
+	@Override
+	public String toString() {
+		return "Options [q_id=" + q_id + ", prm_id=" + prm_id + ", opt_id=" + opt_id + ", selected=" + selected
+				+ ", score=" + score + ", q_text=" + q_text + ", q_hint=" + q_hint + ", q_expl=" + q_expl
+				+ ", prm_name=" + prm_name + ", prm_values=" + prm_values + ", opt_text=" + opt_text + ", opt_type="
+				+ opt_type + ", opt_expl=" + opt_expl + "]";
+	}
+
+	public String getQ_hint() {
+		return q_hint;
+	}
+
+	public void setQ_hint(String q_hint) {
+		this.q_hint = q_hint;
+	}
+
+	public String getQ_expl() {
+		return q_expl;
+	}
+
+	public void setQ_expl(String q_expl) {
+		this.q_expl = q_expl;
+	}
+
+	public String getOpt_type() {
+		return opt_type;
+	}
+
+	public void setOpt_type(String opt_type) {
+		this.opt_type = opt_type;
+	}
+
+	public String getOpt_expl() {
+		return opt_expl;
+	}
+
+	public void setOpt_expl(String opt_expl) {
+		this.opt_expl = opt_expl;
+	}
 
 	public boolean isSelected() {
 		return selected;

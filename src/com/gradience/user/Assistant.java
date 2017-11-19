@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import com.gradience.database.AttemptObject;
+import com.gradience.database.ClosedHomeworksList;
 import com.gradience.database.DropObject;
 import com.gradience.database.EditUserObject;
 import com.gradience.database.EnrolObject;
 import com.gradience.database.OpenHomeworksList;
+import com.gradience.database.ReportList;
 import com.gradience.database.StudentCourseList;
 import com.gradience.database.TACourseList;
 import com.gradience.login.Login;
@@ -16,6 +18,7 @@ import com.gradience.model.AHistory1;
 import com.gradience.model.Course;
 import com.gradience.model.Exercise;
 import com.gradience.model.Options;
+import com.gradience.model.Record;
 
 public class Assistant {
 
@@ -126,8 +129,38 @@ public class Assistant {
 	}
 
 	private void view_course_report(HashMap<String, String> session, Course course) {
-		// TODO Auto-generated method stub
+		header("Report for " + course.getCourse_id() + ", " + session.get("username"));
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		ReportList obj=new ReportList();
+		ArrayList<Record> rlist=obj.execute(course.getCourse_id());
+		int choice;
+		String id="0";
+		System.out.println("USER_ID\tF-NAME\tL-NAME\tEXERCISE\tMARKS");
+		for(int i=0;i<rlist.size();++i) {
+			System.out.println(rlist.get(i));
+		}
+		do {
+			System.out.println("Enter student id -> ");
+			id=sc.next();
+			ArrayList<Record> rslist=obj.execute2(course.getCourse_id(),id);
+			if(rslist.size()==0) {
+				System.out.println("Incorrect student id. Please enter again.");
+			} else {
+				System.out.println("USER_ID\tF-NAME\tL-NAME\tEXERCISE\tMARKS");
+				for(int i=0;i<rslist.size();++i) {
+					System.out.println(rslist.get(i));
+				}
+				break;
+			}
+		} while(true);
+		System.out.print("Press 0 to go back -> ");
+		choice = sc.nextInt();
 		
+		if (choice == 0) {
+			System.out.println("\n\n");
+			view_course_specific(session,course);
+		}
 	}
 
 	private void enrol_drop_student(HashMap<String, String> session, Course course) {
@@ -154,7 +187,7 @@ public class Assistant {
 		switch (choice) {
 		case 0:
 			System.out.println("\n\n");
-			view_course_specific_ta(session, course);
+			view_course_specific(session, course);
 			break;
 		case 1:
 			System.out.println("\n\n");
@@ -381,15 +414,15 @@ public class Assistant {
 			for (int i = 0; i < courses.size(); ++i) {
 				System.out.println(
 						(i + 1) + ". " + courses.get(i).getCourse_id() + " - " + courses.get(i).getCourse_name());
-				System.out.println("Enter your choice (0 to go back) -> ");
-				int temp = sc.nextInt();
-				if (temp == 0) {
-					System.out.println("\n\n");
-					execute(session);
-				} else {
-					System.out.println("\n\n");
-					view_course_specific(session, courses.get(temp - 1));
-				}
+			}
+			System.out.println("Enter your choice (0 to go back) -> ");
+			int temp = sc.nextInt();
+			if (temp == 0) {
+				System.out.println("\n\n");
+				execute(session);
+			} else {
+				System.out.println("\n\n");
+				view_course_specific(session, courses.get(temp - 1));
 			}
 		} else {
 			System.out.print("Press 0 to go back -> ");
@@ -442,7 +475,38 @@ public class Assistant {
 	}
 
 	private void past_hws(HashMap<String, String> session, Course course) {
+		header("Past Homeworks " + course.getCourse_id() + " , " + session.get("username"));
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		ClosedHomeworksList obj = new ClosedHomeworksList();
+		ArrayList<Exercise> list = obj.execute(course.getCourse_id());
+		for (int i = 0; i < list.size(); ++i) {
+			int rtleft = obj.execute2(list.get(i).getExercise_id(), session.get("username"));
+			System.out.println((i + 1) + ". " + list.get(i) + "\t" + (list.get(i).getTotal_rt() + 1 - rtleft) + " attempts.");
+		}
+		System.out.println("Enter your choice to see attempt history -> ");
+		int cnt = sc.nextInt();
+		ArrayList<AHistory1> alist = obj.execute3(list.get(cnt - 1).getExercise_id(), session.get("username"));
+		int i = 0;
+		if (alist.size() == 0) {
+			System.out.println("You did not attempt this quiz.");
+		} else {
+			for (i = 0; i < alist.size(); ++i) {
+				System.out.println(
+						(i + 1) + ". Score - " + alist.get(i).getScore() + "\tEnd Time - " + alist.get(i).getEndTime());
+			}
+			System.out.println("Enter your choice -> ");
+			int choice = sc.nextInt();
+			int attempt_id = alist.get(choice - 1).getAttempt_id();
+			display_attempt(attempt_id, session, course);
+		}
+		System.out.print("Press 0 to go back -> ");
+		int choice = sc.nextInt();
 
+		if (choice == 0) {
+			System.out.println("\n\n");
+			view_course_specific(session, course);
+		}
 	}
 
 	private void current_hws(HashMap<String, String> session, Course course) {
@@ -453,34 +517,84 @@ public class Assistant {
 		ArrayList<Exercise> list = obj.execute(course.getCourse_id());
 		for (int i = 0; i < list.size(); ++i) {
 			int rtleft = obj.execute2(list.get(i).getExercise_id(), session.get("username"));
-			System.out.println((i + 1) + ". " + list.get(i).getExercise_name() + "\t" + list.get(i).getStart() + "\t"
-					+ list.get(i).getEnd() + "\t" + rtleft + " out of " + (list.get(i).getTotal_rt() + 1)
+			System.out.println((i + 1) + ". " + list.get(i) + "\t" + rtleft + " out of " + (list.get(i).getTotal_rt() + 1)
 					+ " attempts left.");
 		}
 		System.out.println("Enter your choice to see attempt history -> ");
 		int cnt = sc.nextInt();
 		ArrayList<AHistory1> alist = obj.execute3(list.get(cnt - 1).getExercise_id(), session.get("username"));
-		for (int i = 0; i < alist.size(); ++i) {
+		int i = 0;
+		for (i = 0; i < alist.size(); ++i) {
 			System.out.println(
 					(i + 1) + ". Score - " + alist.get(i).getScore() + "\tEnd Time - " + alist.get(i).getEndTime());
 		}
+		int attempt_id = 0;
 		if (alist.size() < list.get(cnt - 1).getTotal_rt() + 1) {
-			System.out.println("Do you want to make an attempt? (y or n)-> ");
-			String temp = sc.next();
-			if (temp.equals("n")) {
-				System.out.println("\n\n");
-				view_course_specific(session, course);
+			System.out.println((i + 1) + ". Make new attempt");
+			System.out.println("Enter your choice -> ");
+			int choice = sc.nextInt();
+
+			if (choice == i + 1) {
+				attempt_id = attempt(list.get(cnt - 1), session, course);
 			} else {
-				attempt(list.get(cnt - 1), session, course);
+				attempt_id = alist.get(choice - 1).getAttempt_id();
 			}
 		} else {
+			System.out.println("Enter your choice -> ");
+			int choice = sc.nextInt();
+			attempt_id = alist.get(choice - 1).getAttempt_id();
+		}
+		display_attempt(attempt_id, session, course);
+
+		System.out.print("Press 0 to go back -> ");
+		int choice = sc.nextInt();
+
+		if (choice == 0) {
 			System.out.println("\n\n");
 			view_course_specific(session, course);
 		}
-
+	}
+	
+	private void display_attempt(int attempt_id, HashMap<String, String> session, Course course) {
+		System.out.println("Attempt History");
+		AttemptObject obj = new AttemptObject();
+		ArrayList<Options> options = obj.fetchAttemptOptions(attempt_id);
+		float score = 0;
+		for (int i = 0; i < options.size(); ++i) {
+			score = score + options.get(i).getScore();
+		}
+		System.out.println("Score achieved -> " + score);
+		boolean tried = false;
+		String message = "";
+		for (int i = 0; i < options.size(); ++i) {
+			if (i % 4 == 0) {
+				System.out.println(((i / 4) + 1) + ". " + options.get(i).getQ_text());
+			}
+			if (options.get(i).isSelected()) {
+				tried = true;
+				System.out.println("\t" + ((i % 4) + 1) + ". " + options.get(i).getOpt_text() + ", selected");
+				if (options.get(i).getOpt_type().equals("correct")) {
+					message = ("You selected the correct option. Explanation - " + options.get(i).getQ_expl());
+				} else {
+					message = ("You selected the incorrect option. Explanation - " + options.get(i).getQ_hint() + " : "
+							+ options.get(i).getOpt_expl());
+				}
+			} else {
+				System.out.println("\t" + ((i % 4) + 1) + ". " + options.get(i).getOpt_text());
+			}
+			if (i % 4 == 3) {
+				if (tried) {
+					System.out.println(message);
+				} else {
+					System.out.println("You did not attempt this question.");
+				}
+				tried = false;
+				message = "";
+			}
+		}
 	}
 
-	private void attempt(Exercise exercise, HashMap<String, String> session, Course course) {
+	private int attempt(Exercise exercise, HashMap<String, String> session, Course course) {
 		header("Exercise " + exercise.getExercise_name() + " attempt by " + session.get("username"));
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
@@ -528,8 +642,7 @@ public class Assistant {
 				obj.submitQuiz(attempt_id, history.get(i));
 			}
 			System.out.println("You have submitted the Quiz.");
-			System.out.println("\n\n");
-			current_hws(session, course);
+			return attempt_id;
 		} else {
 			int diff = obj.fetchDifficulty(exercise.getExercise_id());
 			ArrayList<ArrayList<Options>> history = new ArrayList<ArrayList<Options>>();
@@ -554,8 +667,7 @@ public class Assistant {
 				obj.submitQuiz(attempt_id, history.get(j));
 			}
 			System.out.println("You have submitted the Quiz.");
-			System.out.println("\n\n");
-			current_hws(session, course);
+			return attempt_id;
 		}
 	}
 
@@ -583,9 +695,7 @@ public class Assistant {
 	}
 
 	private void logout(HashMap<String, String> session) {
-		for (String key : session.keySet()) {
-			session.remove(key);
-		}
+		session = null;
 		Login.main(null);
 	}
 

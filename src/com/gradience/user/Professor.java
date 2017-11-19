@@ -17,12 +17,14 @@ import com.gradience.database.CourseTopicObject;
 import com.gradience.database.DropObject;
 import com.gradience.database.EditUserObject;
 import com.gradience.database.EnrolObject;
+import com.gradience.database.ReportList;
 import com.gradience.database.SearchQuestionList;
 import com.gradience.database.SearchTopicList;
 import com.gradience.database.TeacherCourseList;
 import com.gradience.login.Login;
 import com.gradience.model.Course;
 import com.gradience.model.Question;
+import com.gradience.model.Record;
 import com.gradience.model.Topic;
 import com.gradience.model.User;
 
@@ -658,7 +660,38 @@ public class Professor {
 	}
 
 	private void view_course_report(HashMap<String, String> session, Course course) {
-
+		header("Report for " + course.getCourse_id() + ", " + session.get("username"));
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		ReportList obj=new ReportList();
+		ArrayList<Record> rlist=obj.execute(course.getCourse_id());
+		int choice;
+		String id="0";
+		System.out.println("USER_ID\tF-NAME\tL-NAME\tEXERCISE\tMARKS");
+		for(int i=0;i<rlist.size();++i) {
+			System.out.println(rlist.get(i));
+		}
+		do {
+			System.out.println("Enter student id -> ");
+			id=sc.next();
+			ArrayList<Record> rslist=obj.execute2(course.getCourse_id(),id);
+			if(rslist.size()==0) {
+				System.out.println("Incorrect student id. Please enter again.");
+			} else {
+				System.out.println("USER_ID\tF-NAME\tL-NAME\tEXERCISE\tMARKS");
+				for(int i=0;i<rslist.size();++i) {
+					System.out.println(rslist.get(i));
+				}
+				break;
+			}
+		} while(true);
+		System.out.print("Press 0 to go back -> ");
+		choice = sc.nextInt();
+		
+		if (choice == 0) {
+			System.out.println("\n\n");
+			view_course_specific(session,course);
+		}
 	}
 
 	private void add_course(HashMap<String, String> session) {

@@ -244,4 +244,44 @@ public class AttemptObject {
 		}
 	}
 
+	public ArrayList<Options> fetchAttemptOptions(int attempt_id) {
+		ArrayList<Options> olist = new ArrayList<Options>();
+		CallableStatement sttmnt = null;
+		try {
+			sttmnt = DBConnection.instance().conn.prepareCall("{call DISPLAY_ATTEMPTED_QUESTIONS(?,?)}");
+			sttmnt.setInt("ATTMPTID", attempt_id);
+			sttmnt.registerOutParameter("questionInfo", OracleTypes.CURSOR);
+			sttmnt.execute();
+			ResultSet rs = (ResultSet) sttmnt.getObject("questionInfo");
+			while (rs.next()) {
+				Options o = new Options();
+				o.setQ_id(rs.getInt("QUESTION_ID"));
+				o.setQ_expl(rs.getString("EXPLANATION"));
+				o.setQ_hint(rs.getString("HINT"));
+				o.setPrm_id(rs.getInt("PARAM_ID"));
+				if (rs.getString("PARAM_NAME").equals("default")) {
+					o.setQ_text(rs.getString("QUESTION_TEXT"));
+				} else {
+					String temp = rs.getString("QUESTION_TEXT");
+					String[] name = rs.getString("PARAM_NAME").split(":");
+					String[] value = rs.getString("PARAM_VALUES").split(":");
+					for (int i = 0; i < name.length; ++i) {
+						temp = temp.replaceAll("\\<" + name[i] + ">", value[i]);
+					}
+					o.setQ_text(temp);
+				}
+				o.setSelected(rs.getString("SELECTED").equals("T"));
+				o.setScore(rs.getFloat("SCORE"));
+				o.setOpt_id(rs.getInt("OPTION_ID"));
+				o.setOpt_text(rs.getString("OPTION_TEXT"));
+				o.setOpt_type(rs.getString("OPTION_TYPE"));
+				o.setOpt_expl(rs.getString("OEXPLANATION"));
+				olist.add(o);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return olist;
+	}
+
 }

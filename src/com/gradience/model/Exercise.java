@@ -16,6 +16,13 @@ public class Exercise {
 	String scoring;
 	int start_diff;
 	int end_diff;
+	
+	@Override
+	public String toString() {
+		return exercise_name + ", " + total_qs + " questions, " + (total_rt+1)
+				+ " attempts, start " + start + ", end " + end + ", Points-(" + rpoints + "," + wpoints + "), "
+				+ type + ", " + scoring;
+	}
 
 	public int getExercise_id() {
 		return exercise_id;
