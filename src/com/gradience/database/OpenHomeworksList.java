@@ -26,6 +26,7 @@ public class OpenHomeworksList {
 			if (sttmnt.getString("MSG").equals("success")) {
 				System.out.println(sttmnt.getString("TEXT"));
 				ResultSet rs = (ResultSet) sttmnt.getObject("openExerciseData");
+				if(rs.isBeforeFirst()){
 				while (rs.next()) {
 					Exercise e = new Exercise();
 					e.setExercise_id(rs.getInt("EXERCISE_ID"));
@@ -42,6 +43,7 @@ public class OpenHomeworksList {
 					e.setEnd_diff(rs.getInt("END_DIFFICULTY"));
 					e.setTopic_id(rs.getInt("TOPIC_ID"));
 					list.add(e);
+				}
 				}
 			} else {
 				System.out.println(sttmnt.getString("TEXT"));

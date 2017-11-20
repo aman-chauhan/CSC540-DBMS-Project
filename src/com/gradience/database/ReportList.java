@@ -20,6 +20,7 @@ public class ReportList {
 			sttmnt.registerOutParameter("REPORTDATA", OracleTypes.CURSOR);
 			sttmnt.execute();
 			ResultSet rs = (ResultSet) sttmnt.getObject("REPORTDATA");
+			if(rs.isBeforeFirst()){
 			while (rs.next()) {
 				Record r = new Record();
 				r.setUserid(rs.getString("USER_ID"));
@@ -29,6 +30,7 @@ public class ReportList {
 				r.setExercisename(rs.getString("EXERCISE_NAME"));
 				r.setMarks(rs.getFloat("MARKS"));
 				ret.add(r);
+			}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

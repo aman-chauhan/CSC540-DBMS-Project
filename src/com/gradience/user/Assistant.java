@@ -13,6 +13,8 @@ import com.gradience.database.OpenHomeworksList;
 import com.gradience.database.ReportList;
 import com.gradience.database.StudentCourseList;
 import com.gradience.database.TACourseList;
+import com.gradience.database.ViewExerciseObject;
+import com.gradience.database.ViewExerciseQuestionObject;
 import com.gradience.login.Login;
 import com.gradience.model.AHistory1;
 import com.gradience.model.Course;
@@ -104,6 +106,7 @@ public class Assistant {
 			System.out.println("0. Go Back");
 			System.out.println("1. Enrol/Drop Student");
 			System.out.println("2. View Report");
+			System.out.println("3. View Exercises");
 			System.out.print("Enter your choice -> ");
 			choice = sc.nextInt();
 			if (choice < 0 || choice > 4) {
@@ -125,7 +128,111 @@ public class Assistant {
 		case 2:
 			view_course_report(session, course);
 			break;
+		case 3:
+			view_exercise_questions(session,course);
 		}
+	}
+
+	private void view_exercise_questions(HashMap<String, String> session, Course course) {
+		header("View Exercises, " + session.get("username"));
+		ViewExerciseObject obj = new ViewExerciseObject();
+		ViewExerciseQuestionObject obj1 = new ViewExerciseQuestionObject();
+		ArrayList<String> topic = obj.execute(course.getCourse_id());
+		for(int i=0;i<topic.size();i++){
+			if(i%11==0){
+				System.out.println();
+			}
+			System.out.print(topic.get(i)+" ");
+		}
+		int ex_id=0;
+		System.out.println();
+		System.out.println("Select an Exercise ID which you want to view else press 0 to go back");
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		ex_id=sc.nextInt();
+		if(ex_id==0){
+			System.out.println("\n\n");
+			view_add_exercise_to_course(session, course);
+		}
+		else{
+			ArrayList<String> ques = obj1.execute(ex_id);
+			for(int i=0;i<ques.size();i++){
+				System.out.println(ques.get(i));
+			}
+			
+		}
+		
+		System.out.println("\n\n");
+		view_add_exercise_to_course(session, course);
+		
+		
+	}
+	private void view_add_exercise_to_course(HashMap<String, String> session, Course course) {
+		header("View/Add Exercises for " + course.getCourse_id() + ", " + session.get("username"));
+
+		boolean check = false;
+		int choice = 1;
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		do {
+			System.out.println("0. Go Back");
+			System.out.println("1. View Exercises");
+			//System.out.println("2. Add Exercise");
+			System.out.print("Enter your choice -> ");
+			choice = sc.nextInt();
+
+			if (choice >= 0 || choice < 3) {
+				check = false;
+			} else {
+				check = true;
+				System.out.println("Please enter a valid choice.\n");
+			}
+		} while (check);
+
+		switch (choice) {
+		case 0:
+			System.out.println("\n\n");
+			view_course_specific(session, course);
+			break;
+		case 1:
+			System.out.println("\n\n");
+			view_exercises(session, course);
+			break;
+		}
+	}
+	
+	private void view_exercises(HashMap<String, String> session, Course course) {
+		header("View Exercises, " + session.get("username"));
+		ViewExerciseObject obj = new ViewExerciseObject();
+		ViewExerciseQuestionObject obj1 = new ViewExerciseQuestionObject();
+		ArrayList<String> topic = obj.execute(course.getCourse_id());
+		for(int i=0;i<topic.size();i++){
+			if(i%11==0){
+				System.out.println();
+			}
+			System.out.print(topic.get(i)+" ");
+		}
+		int ex_id=0;
+		System.out.println();
+		System.out.println("Select an Exercise ID which you want to view else press 0 to go back");
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		ex_id=sc.nextInt();
+		if(ex_id==0){
+			System.out.println("\n\n");
+			view_add_exercise_to_course(session, course);
+		}
+		else{
+			ArrayList<String> ques = obj1.execute(ex_id);
+			for(int i=0;i<ques.size();i++){
+				System.out.println(ques.get(i));
+			}
+			
+		}
+		
+		System.out.println("\n\n");
+		view_add_exercise_to_course(session, course);
+
 	}
 
 	private void view_course_report(HashMap<String, String> session, Course course) {

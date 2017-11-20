@@ -24,11 +24,13 @@ public class CourseTopicObject {
 			sttmnt.registerOutParameter("topicData", OracleTypes.CURSOR);
 			sttmnt.execute();
 			ResultSet rs = (ResultSet) sttmnt.getObject("topicData");
+			if(rs.isBeforeFirst()){
 			while (rs.next()) {
 				Topic t = new Topic();
 				t.setTopic_id(rs.getInt("TOPIC_ID"));
 				t.setTopic_name(rs.getString("TOPIC_NAME"));
 				ret.add(t);
+			}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

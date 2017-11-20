@@ -26,8 +26,10 @@ public class AttemptObject {
 			if (sttmnt.getString("MSG").equals("success")) {
 				System.out.println(sttmnt.getString("TEXT"));
 				ResultSet rs = (ResultSet) sttmnt.getObject("questions");
+				if(rs.isBeforeFirst()){
 				while (rs.next()) {
 					qlist.add(Integer.toString(rs.getInt("QUESTION_ID")));
+				}
 				}
 			} else {
 				System.out.println(sttmnt.getString("TEXT"));

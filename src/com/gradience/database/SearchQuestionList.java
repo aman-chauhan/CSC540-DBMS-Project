@@ -25,6 +25,7 @@ public class SearchQuestionList {
 			if (sttmnt.getString("MSG").equals("success")) {
 				System.out.println(sttmnt.getString("TEXT"));
 				ResultSet rs = (ResultSet) sttmnt.getObject("questionData");
+				if(rs.isBeforeFirst()){
 				while (rs.next()) {
 					Question q = new Question();
 					q.setQuestion_id(rs.getInt("QUESTION_ID"));
@@ -33,6 +34,7 @@ public class SearchQuestionList {
 					q.setExplanation(rs.getString("EXPLANATION"));
 					q.setDifficulty(rs.getInt("DIFFICULTY"));
 					ret.add(q);
+				}
 				}
 			} else {
 				System.out.println(sttmnt.getString("TEXT"));

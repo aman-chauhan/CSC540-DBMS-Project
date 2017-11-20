@@ -25,11 +25,13 @@ public class SearchTopicList {
 			if (sttmnt.getString("MSG").equals("success")) {
 				System.out.println(sttmnt.getString("TEXT"));
 				ResultSet rs = (ResultSet) sttmnt.getObject("topicsData");
+				if(rs.isBeforeFirst()){
 				while (rs.next()) {
 					Topic t = new Topic();
 					t.setTopic_id(rs.getInt("TOPIC_ID"));
 					t.setTopic_name(rs.getString("TOPIC_NAME"));
 					ret.add(t);
+				}
 				}
 			} else {
 				System.out.println(sttmnt.getString("TEXT"));

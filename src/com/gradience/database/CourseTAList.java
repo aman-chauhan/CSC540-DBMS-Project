@@ -20,12 +20,14 @@ public class CourseTAList {
 			sttmnt.registerOutParameter("taData", OracleTypes.CURSOR);
 			sttmnt.execute();
 			ResultSet rs = (ResultSet) sttmnt.getObject("taData");
+			if(rs.isBeforeFirst()){
 			while (rs.next()) {
 				User u=new User();
 				u.setUser_id(rs.getString("STUDENT_ID"));
 				u.setFname(rs.getString("FIRST_NAME"));
 				u.setLname(rs.getString("LAST_NAME"));
 				ret.add(u);
+			}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

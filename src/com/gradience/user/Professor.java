@@ -21,6 +21,8 @@ import com.gradience.database.ReportList;
 import com.gradience.database.SearchQuestionList;
 import com.gradience.database.SearchTopicList;
 import com.gradience.database.TeacherCourseList;
+import com.gradience.database.ViewExerciseObject;
+import com.gradience.database.ViewExerciseQuestionObject;
 import com.gradience.login.Login;
 import com.gradience.model.Course;
 import com.gradience.model.Question;
@@ -399,6 +401,33 @@ public class Professor {
 
 	private void view_exercises(HashMap<String, String> session, Course course) {
 		header("View Exercises, " + session.get("username"));
+		ViewExerciseObject obj = new ViewExerciseObject();
+		ViewExerciseQuestionObject obj1 = new ViewExerciseQuestionObject();
+		ArrayList<String> topic = obj.execute(course.getCourse_id());
+		for(int i=0;i<topic.size();i++){
+			if(i%11==0){
+				System.out.println();
+			}
+			System.out.print(topic.get(i)+" ");
+		}
+		int ex_id=0;
+		System.out.println();
+		System.out.println("Select an Exercise ID which you want to view else press 0 to go back");
+		@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
+		ex_id=sc.nextInt();
+		if(ex_id==0){
+			System.out.println("\n\n");
+			view_add_exercise_to_course(session, course);
+		}
+		else{
+			ArrayList<String> ques = obj1.execute(ex_id);
+			for(int i=0;i<ques.size();i++){
+				System.out.println(ques.get(i));
+			}
+			
+		}
+		
 		System.out.println("\n\n");
 		view_add_exercise_to_course(session, course);
 

@@ -21,6 +21,7 @@ public class TeacherCourseList {
 			sttmnt.registerOutParameter("courseData", OracleTypes.CURSOR);
 			sttmnt.execute();
 			ResultSet rs = (ResultSet) sttmnt.getObject("courseData");
+			if(rs.isBeforeFirst()){
 			while (rs.next()) {
 				Course c = new Course();
 				c.setCourse_id(rs.getString("COURSE_ID"));
@@ -30,6 +31,7 @@ public class TeacherCourseList {
 				c.setEnd_date(rs.getDate("END_DATE"));
 				c.setMax_students(rs.getInt("MAX_STUDENTS"));
 				list.add(c);
+			}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

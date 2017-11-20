@@ -25,6 +25,7 @@ public class StudentCourseList {
 			if(sttmnt.getString("MSG").equals("success")) {
 				System.out.println("Courses found.");
 				ResultSet rs = (ResultSet) sttmnt.getObject("courseData");
+				if(rs.isBeforeFirst()){
 				while (rs.next()) {
 					Course c = new Course();
 					c.setCourse_id(rs.getString("COURSE_ID"));
@@ -34,6 +35,7 @@ public class StudentCourseList {
 					c.setEnd_date(rs.getDate("END_DATE"));
 					c.setMax_students(rs.getInt("MAX_STUDENTS"));
 					list.add(c);
+				}
 				}
 			} else {
 				System.out.println(sttmnt.getString("TEXT"));
